@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="고등학교 인공지능 기초 2단원 데이터 전처리와 핵심 속성 추출 실습 도우미" />
+    <meta name="theme-color" content="#000000" />
+    <title>데이터 실험실 | 인공지능 기초</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#lesson">실습으로 바로가기</a>
+    <header class="global-nav">
+      <a class="wordmark" href="#top" aria-label="데이터 실험실 처음으로">AI · DATA LAB</a>
+      <nav aria-label="주요 메뉴">
+        <a href="#overview">학습 안내</a><a href="#lesson">단계별 실습</a><a href="#check">마무리</a>
+      </nav>
+    </header>
+    <div class="sub-nav">
+      <a href="#top"><strong>데이터 전처리와 핵심 속성 추출</strong><span>02 · 인공지능과 학습</span></a>
+      <div class="progress-wrap" aria-label="학습 진행률"><span id="progressText">0% 완료</span><div class="progress-track"><i id="progressBar"></i></div></div>
+    </div>
+
+    <main id="top">
+      <section class="hero dark-section">
+        <div class="hero-copy">
+          <p class="eyebrow">2022 개정 · 인공지능 기초</p>
+          <h1>좋은 데이터가<br />좋은 인공지능을 만듭니다.</h1>
+          <p>타이태닉 데이터의 빈칸과 이상치를 고치고, 붓꽃을 분류하는 핵심 속성을 직접 찾아보세요.</p>
+          <div class="hero-actions"><a class="button primary" href="#lesson">실습 시작</a><a class="button ghost" href="#overview">학습 목표</a></div>
+        </div>
+        <div class="data-art" aria-hidden="true">
+          <div class="data-card card-a"><small>Age</small><b>22</b><b class="missing">NaN</b><b>35</b></div>
+          <div class="data-card card-b"><small>Fare</small><b>7.25</b><b>71.28</b><b class="outlier">512.33</b></div>
+          <div class="data-card card-c"><small>Correlation</small><div class="mini-heatmap"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        </div>
+      </section>
+
+      <section class="overview light-section" id="overview">
+        <div class="section-title"><p class="eyebrow blue">LEARNING PATH</p><h2>오늘의 세 가지 미션</h2><p>총 3차시. 설명을 읽고, 직접 판단한 뒤, 결과를 코드로 확인합니다.</p></div>
+        <div class="mission-grid">
+          <article><span>01</span><h3>빈칸을 어떻게 채울까?</h3><p>결측치의 의미를 알고 평균·중앙값·삭제의 차이를 비교합니다.</p><a href="#lesson" data-open-tab="missing">결측치 실습 →</a></article>
+          <article><span>02</span><h3>어디부터 이상치일까?</h3><p>상자그림과 IQR을 이용해 평균 범위를 벗어난 값을 찾습니다.</p><a href="#lesson" data-open-tab="outlier">이상치 실습 →</a></article>
+          <article><span>03</span><h3>무엇이 핵심 속성일까?</h3><p>상관계수와 히트맵을 해석해 분류에 중요한 속성을 고릅니다.</p><a href="#lesson" data-open-tab="feature">히트맵 실습 →</a></article>
+        </div>
+        <aside class="concept-note"><strong>기억하세요.</strong><p>상관관계는 두 속성이 함께 변하는 정도입니다. 상관관계가 높아도 한 속성이 다른 속성의 원인이라고 단정할 수는 없습니다.</p></aside>
+      </section>
+
+      <section class="lab-section" id="lesson">
+        <div class="section-title inverse"><p class="eyebrow">INTERACTIVE LAB</p><h2>직접 해보는 데이터 실험</h2><p>탭을 차례대로 이동하며 세 가지 미션을 완료하세요.</p></div>
+        <div class="tabs" role="tablist" aria-label="실습 선택">
+          <button role="tab" aria-selected="true" aria-controls="panel-missing" id="tab-missing" data-tab="missing"><i>1</i> 결측치</button>
+          <button role="tab" aria-selected="false" aria-controls="panel-outlier" id="tab-outlier" data-tab="outlier"><i>2</i> 이상치</button>
+          <button role="tab" aria-selected="false" aria-controls="panel-feature" id="tab-feature" data-tab="feature"><i>3</i> 핵심 속성</button>
+        </div>
+
+        <div class="lab-panel active" id="panel-missing" role="tabpanel" aria-labelledby="tab-missing">
+          <div class="lab-copy"><p class="step-label">MISSION 01</p><h3>타이태닉 승객의 나이 결측치 처리하기</h3><p>나이 데이터에 값 하나가 빠져 있습니다. 각 방법을 적용했을 때 데이터가 어떻게 달라지는지 비교해 보세요.</p>
+            <div class="choice-group" aria-label="결측치 처리 방법">
+              <button class="choice active" data-fill="mean"><b>평균값</b><span>전체의 평균으로 대체</span></button>
+              <button class="choice" data-fill="median"><b>중앙값</b><span>가운데 값으로 대체</span></button>
+              <button class="choice" data-fill="drop"><b>행 삭제</b><span>빈 데이터 행 제거</span></button>
+            </div>
+            <div class="result-callout" id="missingResult" aria-live="polite"></div>
+          </div>
+          <div class="lab-visual">
+            <div class="table-title"><span>titanic_sample.csv</span><small>Age 열</small></div>
+            <table><thead><tr><th>PassengerId</th><th>Age</th><th>처리 결과</th></tr></thead><tbody id="missingTable"></tbody></table>
+          </div>
+          <div class="code-card"><div><span>COLAB CODE</span><button class="copy-button" data-copy="missingCode">코드 복사</button></div><pre><code id="missingCode"># Age 열의 결측치 확인하기
+titanic['Age'].isna().sum()
+
+# 평균값으로 결측치 대체하기
+titanic['Age'].fillna(titanic['Age'].mean())</code></pre></div>
+          <button class="complete-button" data-complete="missing">미션 1 완료하기</button>
+        </div>
+
+        <div class="lab-panel" id="panel-outlier" role="tabpanel" aria-labelledby="tab-outlier" hidden>
+          <div class="lab-copy"><p class="step-label">MISSION 02</p><h3>IQR로 승선 요금 이상치 찾기</h3><p>Q1은 1사분위수, Q3은 3사분위수입니다. 아래 기준을 보고 이상치라고 생각하는 값을 모두 선택하세요.</p>
+            <div class="formula"><span>하한 = Q1 − 1.5 × IQR</span><span>상한 = Q3 + 1.5 × IQR</span></div>
+            <p class="threshold">이 표본의 Q1 = 10, Q3 = 30, IQR = 20 → <b>정상 범위: -20 ~ 60</b></p>
+            <div class="fare-options" id="fareOptions" aria-label="승선 요금 선택"></div>
+            <button class="check-button" id="checkOutliers">선택 확인</button><p class="feedback" id="outlierFeedback" aria-live="polite"></p>
+          </div>
+          <div class="lab-visual boxplot-wrap"><div class="axis"><span>0</span><span>30</span><span>60</span><span>90</span><span>120</span></div><div class="boxplot"><i class="whisker"></i><i class="box"></i><i class="median"></i><i class="dot dot-1"></i><i class="dot dot-2"></i></div><p>Fare(승선 요금) 상자그림</p></div>
+          <div class="code-card"><div><span>COLAB CODE</span><button class="copy-button" data-copy="outlierCode">코드 복사</button></div><pre><code id="outlierCode">q1 = titanic['Fare'].quantile(0.25)
+q3 = titanic['Fare'].quantile(0.75)
+iqr = q3 - q1
+lower = q1 - 1.5 * iqr
+upper = q3 + 1.5 * iqr
+titanic[(titanic['Fare'] &lt; lower) | (titanic['Fare'] &gt; upper)]</code></pre></div>
+          <button class="complete-button" data-complete="outlier" disabled>먼저 정답을 확인하세요</button>
+        </div>
+
+        <div class="lab-panel" id="panel-feature" role="tabpanel" aria-labelledby="tab-feature" hidden>
+          <div class="lab-copy"><p class="step-label">MISSION 03</p><h3>붓꽃 품종을 설명하는 핵심 속성 찾기</h3><p>Species와의 상관계수 절댓값이 큰 속성일수록 품종 분류와 관련이 깊습니다. 히트맵의 마지막 행을 살펴보고 핵심 속성 두 개를 선택하세요.</p>
+            <div class="feature-options" id="featureOptions"></div>
+            <button class="check-button" id="checkFeatures">선택 확인</button><p class="feedback" id="featureFeedback" aria-live="polite"></p>
+          </div>
+          <div class="lab-visual heatmap-wrap"><div class="heatmap" id="heatmap" role="img" aria-label="붓꽃 데이터 속성 간 상관계수 히트맵"></div><p>색이 밝을수록 양의 상관관계가 강합니다.</p></div>
+          <div class="code-card"><div><span>COLAB CODE</span><button class="copy-button" data-copy="featureCode">코드 복사</button></div><pre><code id="featureCode">import seaborn as sns
+import matplotlib.pyplot as plt
+
+correlation = iris.corr(numeric_only=True)
+sns.heatmap(correlation, annot=True, cmap='viridis')
+plt.show()</code></pre></div>
+          <button class="complete-button" data-complete="feature" disabled>먼저 정답을 확인하세요</button>
+        </div>
+      </section>
+
+      <section class="finish light-section" id="check">
+        <div class="finish-card"><p class="eyebrow blue">ONE-MINUTE REVIEW</p><h2>1분 정리</h2><ul><li><b>데이터 전처리</b>는 결측치와 이상치를 처리해 분석에 적합한 형태로 가공하는 과정입니다.</li><li><b>IQR</b>은 Q3−Q1이며, 일반적으로 Q1−1.5×IQR보다 작거나 Q3+1.5×IQR보다 큰 값을 이상치로 봅니다.</li><li><b>핵심 속성</b>은 문제 해결에 꼭 필요한 속성으로, 히트맵과 상관계수 등을 활용해 탐색할 수 있습니다.</li></ul><button class="button primary" id="resetProgress">진행 기록 초기화</button></div>
+        <div class="teacher-note"><span>생각해 볼 질문</span><h3>결측치와 이상치는 언제나 삭제해야 할까요?</h3><p>데이터가 만들어진 상황과 해결하려는 문제를 함께 고려해야 합니다. 같은 데이터도 목적에 따라 가장 적절한 처리 방법이 달라질 수 있습니다.</p></div>
+      </section>
+    </main>
+    <footer><strong>AI · DATA LAB</strong><p>고등학교 인공지능 기초 · Ⅱ. 인공지능과 학습</p><a href="#top">맨 위로 ↑</a></footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
