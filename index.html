@@ -7,7 +7,9 @@
     <meta name="theme-color" content="#000000" />
     <title>데이터 실험실 | 인공지능 기초</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="upload.css" />
     <script src="app.js" defer></script>
+    <script src="upload.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#lesson">실습으로 바로가기</a>
@@ -48,11 +50,12 @@
       </section>
 
       <section class="lab-section" id="lesson">
-        <div class="section-title inverse"><p class="eyebrow">INTERACTIVE LAB</p><h2>직접 해보는 데이터 실험</h2><p>탭을 차례대로 이동하며 세 가지 미션을 완료하세요.</p></div>
+        <div class="section-title inverse"><p class="eyebrow">INTERACTIVE LAB</p><h2>직접 해보는 데이터 실험</h2><p>세 가지 미션을 완료한 뒤, 내 데이터로 같은 분석을 반복해 보세요.</p></div>
         <div class="tabs" role="tablist" aria-label="실습 선택">
           <button role="tab" aria-selected="true" aria-controls="panel-missing" id="tab-missing" data-tab="missing"><i>1</i> 결측치</button>
           <button role="tab" aria-selected="false" aria-controls="panel-outlier" id="tab-outlier" data-tab="outlier"><i>2</i> 이상치</button>
           <button role="tab" aria-selected="false" aria-controls="panel-feature" id="tab-feature" data-tab="feature"><i>3</i> 핵심 속성</button>
+          <button role="tab" aria-selected="false" aria-controls="panel-upload" id="tab-upload" data-tab="upload"><i>4</i> 내 데이터</button>
         </div>
 
         <div class="lab-panel active" id="panel-missing" role="tabpanel" aria-labelledby="tab-missing">
@@ -106,6 +109,27 @@ correlation = iris.corr(numeric_only=True)
 sns.heatmap(correlation, annot=True, cmap='viridis')
 plt.show()</code></pre></div>
           <button class="complete-button" data-complete="feature" disabled>먼저 정답을 확인하세요</button>
+        </div>
+
+        <div class="lab-panel upload-panel" id="panel-upload" role="tabpanel" aria-labelledby="tab-upload" hidden>
+          <div class="lab-copy"><p class="step-label">MY DATA LAB</p><h3>내 CSV 데이터 분석하기</h3><p>CSV 파일을 선택하면 서버 전송 없이 이 브라우저에서만 분석합니다. 첫 행에는 속성명이 있어야 합니다.</p>
+            <label class="upload-box" for="csvFile"><strong>CSV 파일 선택</strong><span>UTF-8 · 최대 2MB · 개인정보 포함 금지</span><input id="csvFile" type="file" accept=".csv,text/csv" /></label><p class="privacy-note">파일 내용은 저장되거나 외부로 전송되지 않습니다.</p>
+          </div>
+          <div class="lab-visual upload-overview" id="uploadWelcome"><b>분석할 파일을 기다리고 있어요.</b><p>파일을 선택하면 행·열 개수와 앞부분 10행이 표시됩니다.</p></div>
+          <div class="upload-workspace" id="uploadWorkspace" hidden>
+            <div class="file-summary" id="fileSummary"></div>
+            <div class="preview-card"><div class="table-title"><span id="uploadedFileName">data.csv</span><small>앞부분 최대 10행</small></div><div class="table-scroll"><table><thead id="uploadTableHead"></thead><tbody id="uploadTableBody"></tbody></table></div></div>
+            <div class="analysis-controls">
+              <label>분석할 숫자 속성<select id="columnSelect"></select></label>
+              <label>결측치 처리<select id="missingStrategy"><option value="none">처리하지 않음</option><option value="mean">평균값으로 대체</option><option value="median">중앙값으로 대체</option><option value="drop">결측 행 삭제</option></select></label>
+              <button class="check-button" id="analyzeFile">선택한 속성 분석</button>
+            </div>
+            <div class="analysis-results" id="analysisResults" aria-live="polite"></div>
+            <div class="correlation-controls"><div><span class="step-label">BONUS</span><h4>두 숫자 속성의 상관관계</h4></div><label>첫 번째 속성<select id="correlationX"></select></label><label>두 번째 속성<select id="correlationY"></select></label><button class="check-button" id="analyzeCorrelation">상관계수 확인</button></div>
+            <div class="correlation-result" id="correlationResult" aria-live="polite"></div>
+            <div class="download-row"><p>선택한 결측치 처리 방법이 적용된 데이터를 CSV로 받을 수 있습니다.</p><button class="button primary" id="downloadCsv">처리된 CSV 내려받기</button></div>
+          </div>
+          <p class="feedback upload-feedback" id="uploadFeedback" aria-live="polite"></p>
         </div>
       </section>
 
