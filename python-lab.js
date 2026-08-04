@@ -13,7 +13,7 @@ function updateRuntimeStatus(message) {
 
 function createPythonWorker() {
   if (pythonWorker) return pythonWorker;
-  pythonWorker = new Worker("./py-worker.mjs", { type: "module" });
+  pythonWorker = new Worker("./py-worker.mjs?v=20260804-3", { type: "module" });
   pythonWorker.addEventListener("message", (event) => {
     const message = event.data;
     if (message.type === "status") { updateRuntimeStatus(message.message); return; }

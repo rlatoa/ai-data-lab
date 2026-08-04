@@ -18,10 +18,21 @@ self.addEventListener("message", async (event) => {
   const { id, code, bytes } = event.data;
   try {
     const pyodide = await getRuntime();
-    // 학생 코드의 pd.read_csv('data.csv')가 같은 파일을 찾도록
-    // 가상 파일시스템의 현재 작업 폴더를 파일 위치와 일치시킨다.
-    pyodide.FS.writeFile("/data.csv", new Uint8Array(bytes));
-    pyodide.FS.chdir("/");
+    // Python이 실제로 사용하는 작업 폴더를 확인한 뒤 그 위치에 쓴다.
+    // 절대 경로와 상대 경로를 모두 지원하기 위해 루트에도 같은 파일을 둔다.
+    const csvBytes = new Uint8Array(bytes);
+    const pythonCwd = String(pyodide.runPython("import os; os.getcwd()"));
+    const relativeTarget = `${pythonCwd.replace(/\/$/, "")}/data.csv`;
+    pyodide.FS.writeFile(relativeTarget, csvBytes);
+    if (relativeTarget !== "/data.csv") pyodide.FS.writeFile("/data.csv", csvBytes);
+
+    // 실행 직전에 Python에서도 파일이 보이는지 검사해 경로 문제를 즉시 발견한다.
+    pyodide.globals.set("__uploaded_csv_path", relativeTarget);
+    pyodide.runPython(`
+import os
+if not os.path.isfile(__uploaded_csv_path):
+    raise FileNotFoundError(f"업로드 파일 준비 실패: {__uploaded_csv_path}")
+`);
     const stdout = [], stderr = [];
     pyodide.setStdout({ batched: (text) => stdout.push(text) });
     pyodide.setStderr({ batched: (text) => stderr.push(text) });
