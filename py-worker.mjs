@@ -18,7 +18,10 @@ self.addEventListener("message", async (event) => {
   const { id, code, bytes } = event.data;
   try {
     const pyodide = await getRuntime();
+    // 학생 코드의 pd.read_csv('data.csv')가 같은 파일을 찾도록
+    // 가상 파일시스템의 현재 작업 폴더를 파일 위치와 일치시킨다.
     pyodide.FS.writeFile("/data.csv", new Uint8Array(bytes));
+    pyodide.FS.chdir("/");
     const stdout = [], stderr = [];
     pyodide.setStdout({ batched: (text) => stdout.push(text) });
     pyodide.setStderr({ batched: (text) => stderr.push(text) });
